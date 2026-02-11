@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Children, useState } from "react";
 import "./App.css";
 
 const tempMovieData = [
@@ -18,6 +18,13 @@ const tempMovieData = [
   },
   {
     imdbID: "tt6751668",
+    Title: "Parasite",
+    Year: "2019",
+    Poster:
+      "https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZDYtZTI3MjcwN2Q5NTVkXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg",
+  },
+  {
+    imdbID: "hey",
     Title: "Parasite",
     Year: "2019",
     Poster:
@@ -57,22 +64,31 @@ export default function App() {
 
   return (
     <>
-      <NavBar movies={movies} />
-      <Main movies={movies} watched={watched} />
+      <NavBar>
+        <Logo />
+        <Search />
+        <NumResults movies={movies} />
+      </NavBar>
+
+      <Main>
+        <ListBox>
+          <MovieList movies={movies} watchlist={false} />
+        </ListBox>
+
+        <ListBox>
+          <Summary watched={watched} />
+          <MovieList movies={watched} watchlist={true} />
+        </ListBox>
+      </Main>
     </>
   );
 }
 
-function Main({ movies, watched }) {
-  return (
-    <main className="main">
-      <ListBox movies={movies} watchlist={false} />
-      <ListBox movies={watched} watchlist={true} />
-    </main>
-  );
+function Main({ children }) {
+  return <main className="main">{children}</main>;
 }
 
-function ListBox({ movies, watchlist }) {
+function ListBox({ children }) {
   const [isOpen, setIsOpen] = useState(true);
 
   function handleToggle() {
@@ -82,7 +98,8 @@ function ListBox({ movies, watchlist }) {
   return (
     <div className="box">
       <ToggleButton onToggle={handleToggle} isOpen={isOpen} />
-      {isOpen && <MovieList movies={movies} watchlist={watchlist} />}
+
+      {isOpen && children}
     </div>
   );
 }
@@ -97,15 +114,11 @@ function ToggleButton({ isOpen, onToggle }) {
 
 function MovieList({ watchlist, movies }) {
   return (
-    <>
-      {watchlist && <Summary watched={movies} />}
-
-      <ul className="list">
-        {movies?.map((movie) => (
-          <ListItem movie={movie} key={movie.imdbID} watchlist={watchlist} />
-        ))}
-      </ul>
-    </>
+    <ul className="list">
+      {movies?.map((movie) => (
+        <ListItem movie={movie} key={movie.imdbID} watchlist={watchlist} />
+      ))}
+    </ul>
   );
 }
 
@@ -172,14 +185,8 @@ function Summary({ watched }) {
   );
 }
 
-function NavBar({ movies }) {
-  return (
-    <nav className="nav-bar">
-      <Logo />
-      <Search />
-      <NumResults movies={movies} />
-    </nav>
-  );
+function NavBar({ children }) {
+  return <nav className="nav-bar">{children}</nav>;
 }
 
 function Search() {
