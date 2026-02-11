@@ -81,25 +81,31 @@ function ListBox({ movies, watchlist }) {
 
   return (
     <div className="box">
-      <button className="btn-toggle" onClick={handleToggle}>
-        {isOpen ? "–" : "+"}
-      </button>
-      {isOpen && (
-        <>
-          {watchlist && <Summary watched={movies} />}
-
-          <ul className="list">
-            {movies?.map((movie) => (
-              <ListItem
-                movie={movie}
-                key={movie.imdbID}
-                watchlist={watchlist}
-              />
-            ))}
-          </ul>
-        </>
-      )}
+      <ToggleButton onToggle={handleToggle} isOpen={isOpen} />
+      {isOpen && <MovieList movies={movies} watchlist={watchlist} />}
     </div>
+  );
+}
+
+function ToggleButton({ isOpen, onToggle }) {
+  return (
+    <button className="btn-toggle" onClick={onToggle}>
+      {isOpen ? "–" : "+"}
+    </button>
+  );
+}
+
+function MovieList({ watchlist, movies }) {
+  return (
+    <>
+      {watchlist && <Summary watched={movies} />}
+
+      <ul className="list">
+        {movies?.map((movie) => (
+          <ListItem movie={movie} key={movie.imdbID} watchlist={watchlist} />
+        ))}
+      </ul>
+    </>
   );
 }
 
