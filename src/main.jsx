@@ -1,13 +1,24 @@
-import { StrictMode } from "react";
+import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
-// import App from './App.jsx'
+import App from "./App.jsx";
 
-import StarRating from "./StarRating.jsx";
+// import StarRating from "./StarRating.jsx";
+
+// function Test() {
+//   const [movierRating, setMovieRating] = useState(0);
+//   return (
+//     <div>
+//       <StarRating color="blue" onSetRating={setMovieRating} />
+//       <p>the has rating of {movierRating} stars</p>
+//     </div>
+//   );
+// }
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    {/* <App /> */}
-    <StarRating maxRating={7} />
+    <App />
+
+    {/* <StarRating maxRating={7} />
 
     <StarRating
       maxRating={5}
@@ -21,7 +32,9 @@ createRoot(document.getElementById("root")).render(
       size={24}
       color="red"
       className="test"
-      defaultRating={3}
-    />
+      defaultRating={4}
+    /> */}
+
+    {/* <Test /> */}
   </StrictMode>,
 );
