@@ -1,4 +1,4 @@
-import { StrictMode, useState } from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 
@@ -17,7 +17,6 @@ import App from "./App.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <App />
-
     {/* <StarRating maxRating={7} />
 
     <StarRating
@@ -34,7 +33,6 @@ createRoot(document.getElementById("root")).render(
       className="test"
       defaultRating={4}
     /> */}
-
-    {/* <Test /> */}
+    ,{/* <Test /> */}
   </StrictMode>,
 );
