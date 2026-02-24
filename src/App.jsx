@@ -63,19 +63,31 @@ const API_key = "769177b1";
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
-  const [query, setQuery] = useState("interstellar");
+  const [query, setQuery] = useState("shshhddjsjjs");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     async function fetchMovies() {
-      setIsLoading(true);
+      try {
+        setIsLoading(true);
+        const res = await fetch(
+          `http://www.omdbapi.com/?apikey=${API_key}&s=${query}`,
+        );
 
-      const res = await fetch(
-        `http://www.omdbapi.com/?apikey=${API_key}&s=${query}`,
-      );
-      const data = await res.json();
-      setMovies(data.Search);
-      setIsLoading(false);
+        if (!res.ok) throw new Error("Fetching movies failed, Try again!!");
+
+        const data = await res.json();
+        if (data.Response === "False") throw new Error(data.Error);
+
+        setMovies(data.Search);
+        console.log(data);
+      } catch (error) {
+        console.error(error.message);
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
+      }
     }
     fetchMovies();
   }, [query]);
@@ -90,11 +102,19 @@ export default function App() {
 
       <Main>
         <ListBox>
-          {isLoading ? (
+          {/* {isLoading ? (
             <Loader />
+          ) : error ? (
+            <ErrorMessage />
           ) : (
             <MovieList movies={movies} watchlist={false} />
+          )} */}
+
+          {isLoading && <Loader />}
+          {!isLoading && !error && (
+            <MovieList movies={movies} watchlist={false} />
           )}
+          {error && <ErrorMessage message={error} />}
         </ListBox>
 
         <ListBox>
@@ -111,6 +131,14 @@ function Loader() {
     <div className="loader-wrapper">
       <span className="loader"></span>
     </div>
+  );
+}
+
+function ErrorMessage({ message }) {
+  return (
+    <p className="error">
+      <span>❌</span> {message}
+    </p>
   );
 }
 
