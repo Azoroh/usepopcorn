@@ -5,11 +5,11 @@ import App from "./App.jsx";
 // import StarRating from "./StarRating.jsx";
 
 // function Test() {
-//   const [movierRating, setMovieRating] = useState(0);
+//   const [movieRating, setMovieRating] = useState(0);
 //   return (
 //     <div>
 //       <StarRating color="blue" onSetRating={setMovieRating} />
-//       <p>the has rating of {movierRating} stars</p>
+//       <p>the has rating of {movieRating} stars</p>
 //     </div>
 //   );
 // }
