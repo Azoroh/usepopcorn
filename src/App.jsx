@@ -113,25 +113,19 @@ export default function App() {
     };
   }, [query]);
 
-  async function handleSelected(movie) {
-    const res = await fetch(
-      `https://www.omdbapi.com/?apikey=${API_key}&i=${movie.imdbID}`,
-    );
-    const data = await res.json();
-    console.log(data);
-    setSelected(data);
+  async function handleSelection(movieId) {
+    if (!selected || selected?.imdbID !== movieId) {
+      const res = await fetch(
+        `http://www.omdbapi.com/?apikey=${API_key}&i=${movieId}`,
+      );
 
-    // if (selected.imdbID !== movie.imdbID) {
-    //   setSelected(null);
-    //   return;
-    // }
-
-    // setSelected(movie);
-    // // setWatched(movies.filter((movie) => movie.imdbID === id));
-    // console.log(selected);
+      const data = await res.json();
+      setSelected(selected?.imdbID === movieId ? null : data);
+      console.log(selected);
+    } else {
+      setSelected(null);
+    }
   }
-
-  console.log(movies);
 
   return (
     <>
@@ -151,7 +145,7 @@ export default function App() {
             <MovieList
               movies={movies}
               watchlist={false}
-              onSelect={handleSelected}
+              onSelect={handleSelection}
             />
           )}
           {error && <ErrorMessage message={error} />}
@@ -159,7 +153,7 @@ export default function App() {
 
         <ListBox>
           {selected ? (
-            <MovieDetail selected={selected} />
+            <MovieDetail selected={selected} onSelect={true} />
           ) : (
             <>
               <Summary watched={watched} />
@@ -233,7 +227,7 @@ function MovieList({ watchlist, movies, onSelect }) {
 
 function ListItem({ movie, watchlist, onSelect }) {
   return (
-    <li onClick={() => onSelect(movie)}>
+    <li onClick={() => onSelect(movie.imdbID)}>
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
       <h3>{movie.Title}</h3>
 
@@ -325,12 +319,14 @@ function NumResults({ movies }) {
   );
 }
 
-function MovieDetail({ selected }) {
+function MovieDetail({ selected, onSelect }) {
   const [movieRating, setMovieRating] = useState(0);
 
   return (
     <div className="details">
-      <button className="btn-back">←</button>
+      <button className="btn-back" onClick={onSelect}>
+        ←
+      </button>
       <header>
         <img src={selected.Poster} alt="" />
 
