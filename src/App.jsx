@@ -217,26 +217,6 @@ export default function App() {
               />
             )
           )}
-
-          {/* {isSecondaryLoading && <Loader />}
-          {selected ? (
-            <MovieDetail
-              selected={selected}
-              onSelect={() => setSelected(null)}
-              onWatched={handleWatched}
-              watched={watched}
-            />
-          ) : (
-            <>
-              <Summary watched={watched} />
-              <MovieList
-                movies={watched}
-                watchlist={true}
-                onDelete={handleDelete}
-                clickable={false}
-              />
-            </>
-          )} */}
         </ListBox>
       </Main>
     </>
@@ -407,7 +387,7 @@ function Logo() {
   return (
     <div className="logo">
       <span role="img">🍿</span>
-      <h1>usePopcorn</h1>
+      <h1>cineRate</h1>
     </div>
   );
 }
