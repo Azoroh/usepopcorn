@@ -200,7 +200,7 @@ body {
   background-color: var(--color-background-100);
 }
 
-.list.list-movies li {
+.list.list-movies li.clickable {
   cursor: pointer;
   transition: all 0.3s;
 }

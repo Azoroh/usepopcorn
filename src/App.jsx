@@ -69,6 +69,7 @@ export default function App() {
   const [query, setQuery] = useState("inception");
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isSecondaryLoading, setIsSecondaryLoading] = useState(false);
   const [error, setError] = useState("");
 
   const [selected, setSelected] = useState(null);
@@ -116,6 +117,7 @@ export default function App() {
   async function handleSelection(movieId) {
     try {
       if (!selected || selected?.imdbID !== movieId) {
+        setIsSecondaryLoading(true);
         const res = await fetch(
           `http://www.omdbapi.com/?apikey=${API_key}&i=${movieId}`,
         );
@@ -128,12 +130,13 @@ export default function App() {
         }
 
         setSelected(selected?.imdbID === movieId ? null : data);
-        console.log(selected);
       } else {
         setSelected(null);
       }
     } catch (error) {
       console.error(error.message);
+    } finally {
+      setIsSecondaryLoading(false);
     }
   }
 
@@ -162,6 +165,12 @@ export default function App() {
     setSelected(null);
   }
 
+  function handleDelete(movieId) {
+    setWatched((watched) =>
+      watched.filter((movie) => movie.imdbID !== movieId),
+    );
+  }
+
   return (
     <>
       <NavBar>
@@ -182,24 +191,52 @@ export default function App() {
               watchlist={false}
               onSelect={handleSelection}
               selected={selected}
+              watched={watched}
             />
           )}
           {error && <ErrorMessage message={error} />}
         </ListBox>
 
         <ListBox>
+          {isSecondaryLoading && <Loader />}
+          {!isSecondaryLoading && !selected && <Summary watched={watched} />}
+          {selected && !isSecondaryLoading ? (
+            <MovieDetail
+              selected={selected}
+              onSelect={() => setSelected(null)}
+              onWatched={handleWatched}
+              watched={watched}
+            />
+          ) : (
+            !isSecondaryLoading && (
+              <MovieList
+                movies={watched}
+                watchlist={true}
+                onDelete={handleDelete}
+                clickable={false}
+              />
+            )
+          )}
+
+          {/* {isSecondaryLoading && <Loader />}
           {selected ? (
             <MovieDetail
               selected={selected}
               onSelect={() => setSelected(null)}
               onWatched={handleWatched}
+              watched={watched}
             />
           ) : (
             <>
               <Summary watched={watched} />
-              <MovieList movies={watched} watchlist={true} />
+              <MovieList
+                movies={watched}
+                watchlist={true}
+                onDelete={handleDelete}
+                clickable={false}
+              />
             </>
-          )}
+          )} */}
         </ListBox>
       </Main>
     </>
@@ -250,7 +287,14 @@ function ToggleButton({ isOpen, onToggle }) {
   );
 }
 
-function MovieList({ watchlist, movies, onSelect, selected }) {
+function MovieList({
+  watchlist,
+  movies,
+  onSelect,
+  selected,
+  onDelete,
+  clickable,
+}) {
   return (
     <ul className="list list-movies">
       {movies?.map((movie) => (
@@ -260,17 +304,26 @@ function MovieList({ watchlist, movies, onSelect, selected }) {
           watchlist={watchlist}
           onSelect={onSelect}
           selected={selected}
+          onDelete={onDelete}
+          clickable={clickable}
         />
       ))}
     </ul>
   );
 }
 
-function ListItem({ movie, watchlist, onSelect, selected }) {
+function ListItem({
+  movie,
+  clickable = true,
+  watchlist,
+  onSelect,
+  selected,
+  onDelete,
+}) {
   return (
     <li
-      className={selected?.imdbID === movie.imdbID ? "selected" : ""}
-      onClick={() => onSelect(movie.imdbID)}
+      className={`${clickable ? "clickable" : "unclickable"} ${selected?.imdbID === movie.imdbID ? "selected" : ""}`}
+      onClick={clickable ? () => onSelect(movie.imdbID) : undefined}
     >
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
       <h3>{movie.Title}</h3>
@@ -287,8 +340,11 @@ function ListItem({ movie, watchlist, onSelect, selected }) {
           </p>
           <p>
             <span>⏳</span>
-            <span>{movie.runtime} min</span>
+            <span>{movie.Runtime}</span>
           </p>
+          <button className="btn-delete" onClick={() => onDelete(movie.imdbID)}>
+            X
+          </button>
         </div>
       ) : (
         <div>
@@ -305,7 +361,7 @@ function ListItem({ movie, watchlist, onSelect, selected }) {
 function Summary({ watched }) {
   const avgImdbRating = average(watched.map((movie) => movie.imdbRating));
   const avgUserRating = average(watched.map((movie) => movie.userRating));
-  const avgRuntime = average(watched.map((movie) => movie.runtime));
+  const avgRuntime = average(watched.map((movie) => parseInt(movie.Runtime)));
 
   return (
     <div className="summary">
@@ -363,8 +419,13 @@ function NumResults({ movies }) {
   );
 }
 
-function MovieDetail({ selected, onSelect, onWatched }) {
+function MovieDetail({ selected, onSelect, onWatched, watched }) {
   const [rating, setRating] = useState(0);
+
+  const isRated = watched.some((movie) => movie.imdbID === selected.imdbID);
+
+  const movieRating = watched.find((movie) => movie.imdbID === selected.imdbID);
+  // console.log(movieRating.userRating);
 
   return (
     <div className="details">
@@ -386,12 +447,17 @@ function MovieDetail({ selected, onSelect, onWatched }) {
 
       <section>
         <div className="rating">
-          <StarRating
-            maxRating={10}
-            size="24"
-            onSetRating={setRating}
-            defaultRating={rating}
-          />
+          {!isRated ? (
+            <StarRating
+              maxRating={10}
+              size="24"
+              onSetRating={setRating}
+              defaultRating={rating}
+            />
+          ) : (
+            <p>You rated this movie {movieRating.userRating} ⭐️</p>
+          )}
+
           {rating > 0 && (
             <button className="btn-add" onClick={() => onWatched(rating)}>
               + Add to list
