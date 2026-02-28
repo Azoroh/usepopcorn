@@ -114,17 +114,52 @@ export default function App() {
   }, [query]);
 
   async function handleSelection(movieId) {
-    if (!selected || selected?.imdbID !== movieId) {
-      const res = await fetch(
-        `http://www.omdbapi.com/?apikey=${API_key}&i=${movieId}`,
+    try {
+      if (!selected || selected?.imdbID !== movieId) {
+        const res = await fetch(
+          `http://www.omdbapi.com/?apikey=${API_key}&i=${movieId}`,
+        );
+        if (!res.ok) throw new Error("Can't fetch movie, Try again!!");
+
+        const data = await res.json();
+
+        if (data.Response === "False") {
+          throw new Error("Something went wrong. Try again!");
+        }
+
+        setSelected(selected?.imdbID === movieId ? null : data);
+        console.log(selected);
+      } else {
+        setSelected(null);
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  function handleWatched(rating) {
+    const { imdbID, Title, Poster, Runtime, imdbRating } = selected;
+
+    const ratedMovie = {
+      imdbID,
+      Title,
+      Poster,
+      Runtime,
+      imdbRating,
+      userRating: rating,
+    };
+
+    setWatched((watched) => {
+      const exists = watched.some(
+        (movie) => movie?.imdbID === ratedMovie.imdbID,
       );
 
-      const data = await res.json();
-      setSelected(selected?.imdbID === movieId ? null : data);
-      console.log(selected);
-    } else {
-      setSelected(null);
-    }
+      if (exists) return watched;
+
+      return [...watched, ratedMovie];
+    });
+
+    setSelected(null);
   }
 
   return (
@@ -146,6 +181,7 @@ export default function App() {
               movies={movies}
               watchlist={false}
               onSelect={handleSelection}
+              selected={selected}
             />
           )}
           {error && <ErrorMessage message={error} />}
@@ -153,7 +189,11 @@ export default function App() {
 
         <ListBox>
           {selected ? (
-            <MovieDetail selected={selected} onSelect={true} />
+            <MovieDetail
+              selected={selected}
+              onSelect={() => setSelected(null)}
+              onWatched={handleWatched}
+            />
           ) : (
             <>
               <Summary watched={watched} />
@@ -210,24 +250,28 @@ function ToggleButton({ isOpen, onToggle }) {
   );
 }
 
-function MovieList({ watchlist, movies, onSelect }) {
+function MovieList({ watchlist, movies, onSelect, selected }) {
   return (
-    <ul className="list">
+    <ul className="list list-movies">
       {movies?.map((movie) => (
         <ListItem
           movie={movie}
           key={movie.imdbID}
           watchlist={watchlist}
           onSelect={onSelect}
+          selected={selected}
         />
       ))}
     </ul>
   );
 }
 
-function ListItem({ movie, watchlist, onSelect }) {
+function ListItem({ movie, watchlist, onSelect, selected }) {
   return (
-    <li onClick={() => onSelect(movie.imdbID)}>
+    <li
+      className={selected?.imdbID === movie.imdbID ? "selected" : ""}
+      onClick={() => onSelect(movie.imdbID)}
+    >
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
       <h3>{movie.Title}</h3>
 
@@ -319,8 +363,8 @@ function NumResults({ movies }) {
   );
 }
 
-function MovieDetail({ selected, onSelect }) {
-  const [movieRating, setMovieRating] = useState(0);
+function MovieDetail({ selected, onSelect, onWatched }) {
+  const [rating, setRating] = useState(0);
 
   return (
     <div className="details">
@@ -345,11 +389,13 @@ function MovieDetail({ selected, onSelect }) {
           <StarRating
             maxRating={10}
             size="24"
-            onSetRating={setMovieRating}
-            defaultRating={movieRating}
+            onSetRating={setRating}
+            defaultRating={rating}
           />
-          {movieRating > 0 && (
-            <button className="btn-add">+ Add to list</button>
+          {rating > 0 && (
+            <button className="btn-add" onClick={() => onWatched(rating)}>
+              + Add to list
+            </button>
           )}
         </div>
 
