@@ -156,7 +156,7 @@ body {
   position: absolute;
   top: 0.8rem;
   right: 0.8rem;
-  height: 2.4rem;
+  height: 3.4rem;
   aspect-ratio: 1;
   border-radius: 50%;
   border: none;
@@ -166,6 +166,9 @@ body {
   font-weight: bold;
   cursor: pointer;
   z-index: 999;
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
 }
 
 .box {

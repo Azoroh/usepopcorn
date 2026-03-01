@@ -65,7 +65,16 @@ const API_key = "769177b1";
 
 export default function App() {
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
+
+  const [watched, setWatched] = useState(() => {
+    try {
+      const saved = localStorage.getItem("watched");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
   const [query, setQuery] = useState("inception");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -73,6 +82,11 @@ export default function App() {
   const [error, setError] = useState("");
 
   const [selected, setSelected] = useState(null);
+
+  // save to local storage whenever watched changes
+  useEffect(() => {
+    localStorage.setItem("watched", JSON.stringify(watched));
+  }, [watched]);
 
   useEffect(() => {
     let ignore = false;
