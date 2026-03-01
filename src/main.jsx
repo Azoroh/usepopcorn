@@ -33,6 +33,6 @@ createRoot(document.getElementById("root")).render(
       className="test"
       defaultRating={4}
     /> */}
-    ,{/* <Test /> */}
+    {/* <Test /> */}
   </StrictMode>,
 );
