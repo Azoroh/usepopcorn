@@ -75,7 +75,7 @@ export default function App() {
     }
   });
 
-  const [query, setQuery] = useState("inception");
+  const [query, setQuery] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSecondaryLoading, setIsSecondaryLoading] = useState(false);

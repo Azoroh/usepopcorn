@@ -166,9 +166,6 @@ body {
   font-weight: bold;
   cursor: pointer;
   z-index: 999;
-  /* display: flex;
-  justify-content: center;
-  align-items: center; */
 }
 
 .box {
