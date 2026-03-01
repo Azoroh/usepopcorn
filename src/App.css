@@ -380,3 +380,147 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* MOBILE VIEW */
+
+/* ===== Mobile friendliness patch ===== */
+
+/* Better viewport behavior on mobile browsers */
+body {
+  min-height: 100dvh;
+}
+
+/* Let content breathe on small screens */
+@media (max-width: 900px) {
+  body {
+    padding: 1.2rem;
+  }
+
+  /* Nav stacks nicely */
+  .nav-bar {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    height: auto;
+    padding: 1.6rem;
+  }
+
+  .logo {
+    justify-content: center;
+  }
+
+  .num-results {
+    justify-self: center;
+  }
+
+  /* Search should not be fixed width */
+  .search {
+    width: 100%;
+    max-width: 48rem;
+    justify-self: stretch;
+  }
+
+  /* Main layout becomes vertical */
+  .main {
+    height: auto;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  /* Boxes become full width */
+  .box {
+    width: 100%;
+    max-width: none;
+    border-radius: 1.2rem;
+  }
+
+  /* List item spacing tighter */
+  .list li {
+    padding: 1.2rem 1.6rem;
+    column-gap: 1.6rem;
+  }
+
+  /* Make posters a bit bigger and more readable */
+  .list li {
+    grid-template-columns: 5.2rem 1fr;
+  }
+
+  .list h3 {
+    font-size: 1.7rem;
+  }
+
+  .list div {
+    gap: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  /* Delete button position for smaller paddings */
+  .btn-delete {
+    right: 1.2rem;
+  }
+
+  /* Summary wraps instead of overflowing */
+  .summary {
+    padding: 1.6rem;
+  }
+
+  .summary div {
+    gap: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  /* Details layout becomes vertical */
+  .details header {
+    flex-direction: column;
+  }
+
+  .details img {
+    width: 100%;
+    max-height: 34rem;
+    object-fit: cover;
+    border-top-left-radius: 0.9rem;
+    border-top-right-radius: 0.9rem;
+  }
+
+  .details-overview {
+    padding: 1.6rem;
+  }
+
+  .details section {
+    padding: 1.6rem;
+  }
+
+  /* Back button stays reachable */
+  .btn-back {
+    top: 1rem;
+    left: 1rem;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 420px) {
+  html {
+    font-size: 58%;
+  }
+
+  .list li {
+    padding: 1rem 1.2rem;
+    grid-template-columns: 4.8rem 1fr;
+  }
+
+  .btn-toggle {
+    top: 0.6rem;
+    right: 0.6rem;
+  }
+}
