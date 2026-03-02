@@ -97,7 +97,7 @@ export default function App() {
         setError("");
 
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${API_key}&s=${query}`,
+          `http://www.omdbapi.com/?apikey=${API_key}&s=${encodeURIComponent(query)}`,
         );
 
         if (!res.ok) throw new Error("Fetching movies failed, Try again!!");
