@@ -97,7 +97,7 @@ export default function App() {
         setError("");
 
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${API_key}&s=${encodeURIComponent(query)}`,
+          `https://www.omdbapi.com/?apikey=${API_key}&s=${encodeURIComponent(query)}`,
         );
 
         if (!res.ok) throw new Error("Fetching movies failed, Try again!!");
@@ -133,7 +133,7 @@ export default function App() {
       if (!selected || selected?.imdbID !== movieId) {
         setIsSecondaryLoading(true);
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${API_key}&i=${movieId}`,
+          `https://www.omdbapi.com/?apikey=${API_key}&i=${movieId}`,
         );
         if (!res.ok) throw new Error("Can't fetch movie, Try again!!");
 
