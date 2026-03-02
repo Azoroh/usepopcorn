@@ -514,6 +514,7 @@ body {
   .btn-back {
     top: 1rem;
     left: 1rem;
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
@@ -531,6 +532,7 @@ body {
   .btn-toggle {
     top: 0.6rem;
     right: 0.6rem;
+    -webkit-tap-highlight-color: transparent;
   }
 
   /* Keep the box tall enough to always show the toggle button */
@@ -546,5 +548,6 @@ body {
   .btn-toggle {
     top: 0.8rem;
     right: 0.8rem;
+    -webkit-tap-highlight-color: transparent;
   }
 }
