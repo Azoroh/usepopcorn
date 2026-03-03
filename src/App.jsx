@@ -374,9 +374,19 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
                   />
 
                   {userRating > 0 && (
-                    <button className="btn-add" onClick={handleAdd}>
-                      + Add to list
-                    </button>
+                    <div className="rating-btn">
+                      <button className="btn-add" onClick={handleAdd}>
+                        + Add to list
+                      </button>
+                      <button
+                        className="btn-cancel"
+                        onClick={() => {
+                          setUserRating("");
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   )}
                 </>
               ) : (

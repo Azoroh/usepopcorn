@@ -366,6 +366,12 @@ body {
   gap: 2.4rem;
 }
 
+.rating-btn {
+  /* width: 100%; */
+  display: flex;
+  gap: 1rem;
+}
+
 .btn-add {
   background-color: var(--color-primary);
   color: var(--color-text);
@@ -376,10 +382,28 @@ body {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s;
+  flex-grow: 5;
+}
+
+.btn-cancel {
+  background-color: var(--color-primary-light);
+  color: var(--color-text);
+  border: none;
+  border-radius: .5rem;
+  font-size: 1.4rem;
+  padding: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  flex-grow: 1;
 }
 
 .btn-add:hover {
   background-color: var(--color-primary-light);
+}
+
+.btn-cancel:hover {
+  background-color: rgb(109, 109, 109);
 }
 
 .seconds {
