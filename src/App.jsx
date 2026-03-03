@@ -85,6 +85,10 @@ export default function App() {
     });
   }
 
+  function handleDelete(id) {
+    setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
+  }
+
   useEffect(() => {
     let ignore = false;
 
@@ -161,7 +165,11 @@ export default function App() {
           ) : (
             <>
               <Summary watched={watched} />
-              <MovieList movies={watched} watchlist={true} />
+              <MovieList
+                movies={watched}
+                watchlist={true}
+                onDelete={handleDelete}
+              />
             </>
           )}
         </ListBox>
@@ -213,7 +221,7 @@ function ToggleButton({ isOpen, onToggle }) {
   );
 }
 
-function MovieList({ watchlist, movies, onSelectMovie }) {
+function MovieList({ watchlist, movies, onSelectMovie, onDelete }) {
   return (
     <ul className="list list-movies">
       {movies?.map((movie) => (
@@ -222,13 +230,19 @@ function MovieList({ watchlist, movies, onSelectMovie }) {
           key={movie.imdbID}
           watchlist={watchlist}
           onSelectMovie={onSelectMovie}
+          onDelete={onDelete}
         />
       ))}
     </ul>
   );
 }
 
-function ListItem({ movie, watchlist, onSelectMovie }) {
+function ListItem({ movie, watchlist, onSelectMovie, onDelete }) {
+  function handleDelete(e) {
+    e.stopPropagation();
+    onDelete(movie.imdbID);
+  }
+
   return (
     <li onClick={() => onSelectMovie(movie.imdbID)}>
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
@@ -248,6 +262,9 @@ function ListItem({ movie, watchlist, onSelectMovie }) {
             <span>⏳</span>
             <span>{movie.runtime} min</span>
           </p>
+          <button className="btn-delete" onClick={(e) => handleDelete(e)}>
+            X
+          </button>
         </div>
       ) : (
         <div>
@@ -269,10 +286,10 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
 
   // const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
   const isWatched = watched.some((el) => el.imdbID === selectedId);
-  console.log(isWatched);
-
-  const selectedMovie = watched.find((movie) => movie.imdbID === selectedId);
-  console.log(selectedMovie);
+  // const selectedMovie = watched.find((movie) => movie.imdbID === selectedId);
+  const watchedUserRating = watched.find(
+    (movie) => movie.imdbID === selectedId,
+  )?.userRating;
 
   const {
     Title,
@@ -363,7 +380,7 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
                   )}
                 </>
               ) : (
-                <p>You rated this movie {selectedMovie.userRating} ⭐️</p>
+                <p>You rated this movie {watchedUserRating} ⭐️</p>
               )}
             </div>
             <p>
@@ -397,11 +414,11 @@ function Summary({ watched }) {
         </p>
         <p>
           <span>⭐️</span>
-          <span>{avgImdbRating}</span>
+          <span>{avgImdbRating.toFixed(2)}</span>
         </p>
         <p>
           <span>🌟</span>
-          <span>{avgUserRating}</span>
+          <span>{avgUserRating.toFixed(2)}</span>
         </p>
         <p>
           <span>⏳</span>
