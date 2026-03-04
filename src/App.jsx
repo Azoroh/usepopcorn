@@ -340,6 +340,15 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     getMovieDetails();
   }, [selectedId]);
 
+  useEffect(() => {
+    if (!Title) return;
+    document.title = `Movie | ${Title}`;
+
+    return function () {
+      document.title = "cineRate - Movie review";
+    };
+  }, [Title]);
+
   return (
     <div className="details">
       {error && <ErrorMessage />}
