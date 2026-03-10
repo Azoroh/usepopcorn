@@ -241,6 +241,7 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [userRating, setUserRating] = useState("");
+  const countRef = useRef(0);
 
   const isWatched = watched.some((el) => el.imdbID === selectedId);
   // const selectedMovie = watched.find((movie) => movie.imdbID === selectedId);
@@ -286,6 +287,7 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
       imdbRating: Number(imdbRating),
       userRating,
       runtime: Number(Runtime.split(" ").at(0)),
+      countRatingDecisions: countRef.current,
     };
 
     onAddWatched(newWatchedMovie);
@@ -333,6 +335,10 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
       document.title = "cineRate - Movie review";
     };
   }, [Title]);
+
+  useEffect(() => {
+    if (userRating) countRef.current += 1;
+  }, [userRating]);
 
   return (
     <div className="details">
